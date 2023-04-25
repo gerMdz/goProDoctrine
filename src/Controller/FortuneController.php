@@ -27,11 +27,9 @@ class FortuneController extends AbstractController
     public function homepage(CategoryRepository $categoryRepository)
     {
 
-        $categories = $categoryRepository->findAll();
+        $categories = $categoryRepository->findAllOrdered();
 
-        return $this->render('fortune/homepage.html.twig',[
-            'categories' => $categories
-        ]);
+        return $this->render('fortune/homepage.html.twig', compact('categories'));
     }
 
     /**
