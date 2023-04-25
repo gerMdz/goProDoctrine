@@ -4,4 +4,4 @@ goProDoctrine
 
 ### Next
 
-[Cap1](https://symfonycasts.com/screencast/doctrine-queries/dql)
+[Cap2](https://symfonycasts.com/screencast/doctrine-queries/query-builder#play)
