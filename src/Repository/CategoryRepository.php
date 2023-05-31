@@ -55,6 +55,18 @@ class CategoryRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
+    public function buscar($texto)
+    {
+
+//        Se  usa LowerCase porque Postgres no es CI
+        return $this->createQueryBuilder('category')
+            ->andWhere('LOWER(category.name) LIKE :textoABuscar OR category.iconKey LIKE :textoABuscar')
+            ->setParameter('textoABuscar', '%'.strtolower($texto).'%')
+            ->getQuery()
+            ->execute()
+            ;
+    }
+
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */

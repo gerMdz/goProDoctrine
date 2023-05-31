@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class FortuneController extends AbstractController
@@ -24,10 +25,18 @@ class FortuneController extends AbstractController
     /**
      * @Route("/", name="homepage")
      */
-    public function homepage(CategoryRepository $categoryRepository)
+    public function homepage(CategoryRepository $categoryRepository, Request $request)
     {
 
-        $categories = $categoryRepository->findAllOrdered();
+        $buscar = $request->query->get('q');
+
+        if($buscar){
+            $categories = $categoryRepository->buscar($buscar);
+        }else{
+            $categories = $categoryRepository->findAllOrdered();
+        }
+
+
 
         return $this->render('fortune/homepage.html.twig', compact('categories'));
     }
