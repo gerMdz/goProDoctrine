@@ -60,11 +60,14 @@ class CategoryRepository extends ServiceEntityRepository
 
 //        Se  usa LowerCase porque Postgres no es CI
         return $this->createQueryBuilder('category')
-            ->andWhere('LOWER(category.name) LIKE :textoABuscar OR category.iconKey LIKE :textoABuscar')
-            ->setParameter('textoABuscar', '%'.strtolower($texto).'%')
+            ->leftJoin('category.fortuneCookies', 'fc')
+            ->andWhere('LOWER(category.name) LIKE :textoABuscar 
+                        OR category.iconKey LIKE :textoABuscar 
+                        OR fc.fortune LIKE :textoABuscar')
+
+            ->setParameter('textoABuscar', '%' . strtolower($texto) . '%')
             ->getQuery()
-            ->execute()
-            ;
+            ->execute();
     }
 
 //    /**
