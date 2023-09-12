@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -47,6 +48,8 @@ class CategoryRepository extends ServiceEntityRepository
 //        $query = $this->getEntityManager()->createQuery($dql);
 
         $qb = $this->createQueryBuilder('cat')
+            ->leftJoin('cat.fortuneCookies', 'fortuneCookies')
+            ->addSelect('fortuneCookies')
             ->addOrderBy('cat.name', 'DESC');
 
         $query = $qb->getQuery();
@@ -61,6 +64,7 @@ class CategoryRepository extends ServiceEntityRepository
 //        Se  usa LowerCase porque Postgres no es CI
         return $this->createQueryBuilder('category')
             ->leftJoin('category.fortuneCookies', 'fc')
+            ->addSelect('fc')
             ->andWhere('LOWER(category.name) LIKE :textoABuscar 
                         OR category.iconKey LIKE :textoABuscar 
                         OR fc.fortune LIKE :textoABuscar')
@@ -94,4 +98,17 @@ class CategoryRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function findWithFortunesJoin(string $id)
+    {
+        return $this->createQueryBuilder('category')
+            ->leftJoin('category.fortuneCookies', 'fc')
+            ->addSelect('fc')
+            ->andWhere('category.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

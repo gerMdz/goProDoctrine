@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Category;
 use App\Entity\FortuneCookie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -63,4 +66,16 @@ class FortuneCookieRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    /**
+     * @throws NoResultException|NonUniqueResultException
+     */
+    public function contarNroAMostrarPorCategory(Category $category)
+    {
+        return $this->createQueryBuilder('fc')
+            ->andWhere('fc.category = :fcCategory')
+            ->setParameter('fcCategory', $category)
+            ->select('SUM(fc.numberPrinted) as muestraFortuna')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
