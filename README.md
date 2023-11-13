@@ -4,4 +4,4 @@ goProDoctrine
 
 ### Next
 
-[Cap 7](https://symfonycasts.com/screencast/doctrine-queries-legacy/select-specific-fields#play)
+[Cap 9](https://symfonycasts.com/screencast/doctrine-queries-legacy/reusing-queries-query-builder#play)

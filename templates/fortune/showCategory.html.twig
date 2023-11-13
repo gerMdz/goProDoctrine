@@ -8,10 +8,11 @@
                     <thead class="header-bkgrnd">
                         <tr>
                             <th>
-                               <span class="fa {{ category.iconKey }}"></span> {{ category.name }} 
+                               <span class="fa {{ category.iconKey }}"></span> {{ catFortuna }}
                             </th>
                             <th>
-                               Printed History ({{ muestraFortuna|number_format }}) total
+                               Printed History ({{ muestraFortuna|number_format }} total
+                                {{ avgFortuna|number_format }} promedio)
                             </th>
                         </tr>
                     </thead>

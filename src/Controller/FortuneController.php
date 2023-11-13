@@ -55,10 +55,12 @@ class FortuneController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $muestraFortuna = $fortuneCookieRepository->contarNroAMostrarPorCategory($category);
+        $dataFortuna = $fortuneCookieRepository->contarNroAMostrarPorCategory($category);
 
+        $muestraFortuna = $dataFortuna['muestraFortuna'];
+        $avgFortuna = $dataFortuna['fortunesAverage'];
+        $catFortuna = $dataFortuna['name'];
 
-
-        return $this->render('fortune/showCategory.html.twig', compact('category', 'muestraFortuna'));
+        return $this->render('fortune/showCategory.html.twig', compact('category', 'muestraFortuna', 'avgFortuna','catFortuna' ));
     }
 }

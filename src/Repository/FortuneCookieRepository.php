@@ -67,15 +67,18 @@ class FortuneCookieRepository extends ServiceEntityRepository
 //        ;
 //    }
     /**
-     * @throws NoResultException|NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function contarNroAMostrarPorCategory(Category $category)
     {
+        $conection = $this->getEntityManager()->getConnection();
+        dd($conection);
         return $this->createQueryBuilder('fc')
             ->andWhere('fc.category = :fcCategory')
             ->setParameter('fcCategory', $category)
-            ->select('SUM(fc.numberPrinted) as muestraFortuna')
+            ->innerJoin('fc.category', 'cat')
+            ->select('SUM(fc.numberPrinted) as muestraFortuna, AVG(fc.numberPrinted) fortunesAverage, cat.name')
             ->getQuery()
-            ->getSingleScalarResult();
+            ->getOneOrNullResult();
     }
 }
