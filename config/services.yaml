@@ -25,3 +25,13 @@ services:
 
     App\Service\Faker\FixturesFortunesProvider:
         tags: [ { name: nelmio_alice.faker.provider } ]
+
+
+    before_request_listener:
+        class: App\EventListener\BeforeRequestListener
+        arguments: ['@doctrine.orm.entity_manager']
+        tags:
+            -
+                name: kernel.event_listener
+                event: kernel.request
+                method: onKernelRequest

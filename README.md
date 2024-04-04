@@ -1,7 +1,9 @@
-goProDoctrine
+goProDoctrine 
 -------------
+Terminado
 
+Seguimos con este otro
 
 ### Next
 
-[Cap 9](https://symfonycasts.com/screencast/doctrine-queries-legacy/reusing-queries-query-builder#play)
+[Cap 1](https://symfonycasts.com/screencast/doctrine-queries/dql)

@@ -69,10 +69,9 @@ class FortuneCookieRepository extends ServiceEntityRepository
     /**
      * @throws NonUniqueResultException
      */
-    public function contarNroAMostrarPorCategory(Category $category)
+    public function contarNroAMostrarPorCategory($category)
     {
-        $conection = $this->getEntityManager()->getConnection();
-        dd($conection);
+
         return $this->createQueryBuilder('fc')
             ->andWhere('fc.category = :fcCategory')
             ->setParameter('fcCategory', $category)

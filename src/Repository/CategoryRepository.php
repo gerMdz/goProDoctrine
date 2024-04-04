@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -43,14 +44,10 @@ class CategoryRepository extends ServiceEntityRepository
 
     public function findAllOrdered()
     {
-//        $dql = 'SELECT cat FROM App\Entity\Category cat ORDER BY cat.name DESC';
 
-//        $query = $this->getEntityManager()->createQuery($dql);
-
-        $qb = $this->createQueryBuilder('cat')
-            ->leftJoin('cat.fortuneCookies', 'fortuneCookies')
-            ->addSelect('fortuneCookies')
-            ->addOrderBy('cat.name', 'DESC');
+        $qb = $this->createQueryBuilder('category')
+            ->addOrderBy('category.name', 'DESC');
+        $this->addFortuneCookieAndSelect($qb);
 
         $query = $qb->getQuery();
 
@@ -58,57 +55,49 @@ class CategoryRepository extends ServiceEntityRepository
         return $query->execute();
     }
 
+    /**
+     * @param QueryBuilder $qb
+     * @return QueryBuilder
+     */
+    private function addFortuneCookieAndSelect(QueryBuilder $qb): QueryBuilder
+    {
+       return $qb->leftJoin('category.fortuneCookies', 'fc')
+            ->addSelect('fc');
+
+    }
+
     public function buscar($texto)
     {
 
 //        Se  usa LowerCase porque Postgres no es CI
-        return $this->createQueryBuilder('category')
-            ->leftJoin('category.fortuneCookies', 'fc')
-            ->addSelect('fc')
+        $qb = $this->createQueryBuilder('category');
+
+        $this->addFortuneCookieAndSelect($qb);
+
+        $qb
             ->andWhere('LOWER(category.name) LIKE :textoABuscar 
                         OR category.iconKey LIKE :textoABuscar 
                         OR fc.fortune LIKE :textoABuscar')
+            ->setParameter('textoABuscar', '%' . strtolower($texto) . '%');
+        $query = $qb
+            ->getQuery();
 
-            ->setParameter('textoABuscar', '%' . strtolower($texto) . '%')
-            ->getQuery()
-            ->execute();
+        return $query->execute();
     }
 
-//    /**
-//     * @return Category[] Returns an array of Category objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Category
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
     /**
      * @throws NonUniqueResultException
      */
     public function findWithFortunesJoin(string $id)
     {
-        return $this->createQueryBuilder('category')
-            ->leftJoin('category.fortuneCookies', 'fc')
-            ->addSelect('fc')
+        $qb = $this->createQueryBuilder('category')
             ->andWhere('category.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getOneOrNullResult();
+            ->setParameter('id', $id);
+        $this->addFortuneCookieAndSelect($qb);
+       return $qb->getQuery()
+            ->getOneOrNullResult()
+        ;
+
+
     }
 }

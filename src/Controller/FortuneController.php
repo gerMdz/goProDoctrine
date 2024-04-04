@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use App\Repository\FortuneCookieRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -28,17 +29,20 @@ class FortuneController extends AbstractController
     /**
      * @Route("/", name="homepage")
      */
-    public function homepage(CategoryRepository $categoryRepository, Request $request): Response
+    public function homepage(CategoryRepository     $categoryRepository, Request $request,
+                             EntityManagerInterface $em): Response
     {
+
+
+
 
         $buscar = $request->query->get('q');
 
-        if($buscar){
+        if ($buscar) {
             $categories = $categoryRepository->buscar($buscar);
-        }else{
+        } else {
             $categories = $categoryRepository->findAllOrdered();
         }
-
 
 
         return $this->render('fortune/homepage.html.twig', compact('categories'));
@@ -50,7 +54,10 @@ class FortuneController extends AbstractController
      */
     public function showCategory(string $id, CategoryRepository $categoryRepository, FortuneCookieRepository $fortuneCookieRepository): Response
     {
+        /** @var Category $category */
         $category = $categoryRepository->findWithFortunesJoin($id);
+
+
         if (!$category) {
             throw $this->createNotFoundException();
         }
@@ -61,6 +68,6 @@ class FortuneController extends AbstractController
         $avgFortuna = $dataFortuna['fortunesAverage'];
         $catFortuna = $dataFortuna['name'];
 
-        return $this->render('fortune/showCategory.html.twig', compact('category', 'muestraFortuna', 'avgFortuna','catFortuna' ));
+        return $this->render('fortune/showCategory.html.twig', compact('category', 'muestraFortuna', 'avgFortuna', 'catFortuna'));
     }
 }
